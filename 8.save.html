@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TensorFlow.js Tutorial - lemon</title>
+
+    <!-- Import TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+    
+</head>
+
+<body>
+    <script>
+        var 온도 = [20,21,22,23];
+        var 판매량 = [40,42,44,46];
+        var 원인 = tf.tensor(온도);
+        var 결과 = tf.tensor(판매량);
+
+        var X = tf.input({ shape: [1] });
+        var Y = tf.layers.dense({ units: 1 }).apply(X);
+        var model = tf.model({ inputs: X, outputs: Y });
+        var compileParam = { optimizer: tf.train.adam(), loss: tf.losses.meanSquaredError }
+        model.compile(compileParam);
+
+        var fitParam = { 
+          epochs: 3000, 
+          callbacks:{
+            onEpochEnd:
+              function(epoch, logs){
+                console.log('epoch', epoch, logs, 'RMSE=>', Math.sqrt(logs.loss));
+              }
+          }
+        }
+        model.fit(원인, 결과, fitParam).then(function (result) {
+            var 예측한결과 = model.predict(원인);
+            예측한결과.print();
+//             model.save('downloads://lemon');
+            model.save('localstorage://lemon');
+
+        });  
+
+    </script>
+</body>
+
+</html>
